@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Optimizador Selco
+GenericName=Optimizador de melamina
+Comment=Cortes de melamina para la seccionadora Biesse Selco WNT 600
+Exec=optimizador-selco
+Icon=optimizador-selco
+Terminal=false
+Categories=Office;Utility;
+StartupNotify=true
+Keywords=melamina;selco;corte;placas;

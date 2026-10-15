@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Usuario - Optimizador de Cortes Selco WNT 600</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-hover: #0369a1;
+            --accent: #10b981;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --code-bg: #1e293b;
+            --code-text: #38bdf8;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #38bdf8;
+                --primary-hover: #7dd3fc;
+                --accent: #34d399;
+                --bg-body: #090e17;
+                --bg-card: #0f172a;
+                --text-main: #f1f5f9;
+                --text-muted: #94a3b8;
+                --border: rgba(255, 255, 255, 0.1);
+                --code-bg: #0b1120;
+                --code-text: #7dd3fc;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--primary);
+        }
+
+        .header-title p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .badge-brand {
+            background: rgba(2, 132, 199, 0.12);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 1.35rem;
+            color: var(--text-main);
+            margin-top: 2rem;
+            margin-bottom: 0.85rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            margin-top: 1.4rem;
+            margin-bottom: 0.6rem;
+            color: var(--primary);
+        }
+
+        p, ul, ol {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        ul, ol {
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.4rem;
+        }
+
+        .card-step {
+            background: rgba(2, 132, 199, 0.04);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.25rem;
+            font-size: 0.92rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.25rem 0;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 0.75rem 0.85rem;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+
+        th {
+            background: rgba(0, 0, 0, 0.04);
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        code, kbd {
+            font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+            font-size: 0.85em;
+        }
+
+        kbd {
+            background: #e2e8f0;
+            color: #0f172a;
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            border: 1px solid #cbd5e1;
+            font-weight: 600;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 1.2rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            margin: 1rem 0;
+            line-height: 1.5;
+        }
+
+        .tag-pill {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-right: 0.3rem;
+        }
+
+        .tag-green { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .tag-blue { background: rgba(2, 132, 199, 0.2); color: #0284c7; }
+        .tag-amber { background: rgba(245, 158, 11, 0.2); color: #d97706; }
+
+        .btn-print {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .btn-print:hover { background: var(--primary-hover); }
+
+        @media print {
+            body { padding: 0; background: white; color: black; }
+            .container { border: none; box-shadow: none; max-width: 100%; padding: 0; }
+            .btn-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <div class="header-title">
+            <h1>Manual de Usuario: Optimizador Selco WNT 600</h1>
+            <p>Seccionadora Horizontal Biesse Selco / Estándar Optiplanning</p>
+        </div>
+        <div>
+            <span class="badge-brand">Versión 2.0 Industrial</span>
+            <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+        </div>
+    </header>
+
+    <h2>1. Introducción y Compatibilidad</h2>
+    <p>
+        Este software es un <strong>Optimizador Guillotina 2D</strong> diseñado para talleres de carpintería y fábricas de muebles que operan con seccionadoras de control numérico (CNC) <strong>Biesse Selco WNT 600, WNT 200, SK4</strong> y sistemas que utilizan el formato de corte de <strong>Optiplanning</strong>.
+    </p>
+    <div class="alert-box">
+        <strong>Compatibilidad de Máquina:</strong> Los archivos generados (extensión <code>.001</code>, <code>.002</code>, <code>.00X</code>) contienen la estructura de bloques exacta requerida por la máquina: <code>B_SCH</code>, <code>B_CUT</code>, <code>E_SCH</code>, cabecera <code>HP=9000</code> y saltos de línea Windows CRLF.
+    </div>
+
+    <h2>2. Cómo Ejecutar en Windows</h2>
+    <div class="card-step">
+        <h3>Opción Rápida (1 Clic)</h3>
+        <ol>
+            <li>Ubica la carpeta <strong>Optimizador_Selco_Windows</strong> en tu computadora.</li>
+            <li>Haz doble clic sobre el archivo: <strong><code>INICIAR_EN_WINDOWS.bat</code></strong>.</li>
+            <li>El script detecta PHP, arranca el servidor local y abre automáticamente tu navegador en <code>http://localhost:8080/</code>.</li>
+            <li>Para cerrar la aplicación, simplemente cierra la ventana negra de la consola.</li>
+        </ol>
+    </div>
+
+    <div class="card-step">
+        <h3>Opción con Servidor XAMPP</h3>
+        <ol>
+            <li>Copia esta carpeta completa dentro de: <code>C:\xampp\htdocs\Optimizador</code></li>
+            <li>Abre el panel de XAMPP y presiona <strong>Start</strong> en el módulo Apache.</li>
+            <li>Abre Google Chrome o Edge y entra a: <strong><code>http://localhost/Optimizador/</code></strong></li>
+        </ol>
+    </div>
+
+    <h2>3. Guía de Uso Paso a Paso</h2>
+
+    <h3>Paso 1: Configurar la Placa Base (Materia Prima)</h3>
+    <p>En el panel izquierdo, ajusta las medidas de la placa que colocarás en la máquina:</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Parámetro</th>
+                <th>Valor Recomendado</th>
+                <th>Función</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Largo X (mm)</strong></td>
+                <td>2500 mm</td>
+                <td>Longitud en el sentido de los rodillos principales.</td>
+            </tr>
+            <tr>
+                <td><strong>Ancho Y (mm)</strong></td>
+                <td>1830 mm</td>
+                <td>Ancho en el sentido del carro empujador.</td>
+            </tr>
+            <tr>
+                <td><strong>Espesor Z (mm)</strong></td>
+                <td>18 mm</td>
+                <td>Grosor nominal del tablero (15, 18, 25 mm).</td>
+            </tr>
+            <tr>
+                <td><strong>Refilo Perimetral</strong></td>
+                <td>10 mm</td>
+                <td>Corte inicial de escuadra para eliminar bordes golpeados.</td>
+            </tr>
+            <tr>
+                <td><strong>Espesor de Sierra (Kerf)</strong></td>
+                <td>4.4 mm</td>
+                <td>Grosor de la hoja de sierra Selco WNT 600.</td>
+            </tr>
+            <tr>
+                <td><strong>Código de Trabajo</strong></td>
+                <td>Ej: <code>002ROB15</code></td>
+                <td>Nombre que llevará el archivo generado en la máquina.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Paso 2: Carga Masiva Inteligente desde Excel (<kbd>Ctrl+V</kbd>)</h3>
+    <p>No pierdas tiempo cargando piezas una por una:</p>
+    <div class="card-step">
+        <ol>
+            <li>En tu planilla Excel o Google Sheets, selecciona las filas de tu despiece y presiona <kbd>Ctrl+C</kbd>.</li>
+            <li>En la pantalla del Optimizador, presiona directamente <kbd>Ctrl+V</kbd> o haz clic en el botón azul <strong>[📂 CARGA MASIVA / EXCEL]</strong>.</li>
+            <li>También puedes arrastrar un archivo <code>.xlsx</code> o <code>.csv</code> dentro de la ventana.</li>
+            <li><strong>Auto-detección automática:</strong> El motor identifica automáticamente las columnas de tu planilla (Nombre, Largo, Ancho, Cantidad, Veta, Material, Espesor).</li>
+            <li>Haz clic en <strong>[✓ Importar Piezas]</strong>. Las filas se cargarán en la tabla con un efecto luminoso verde, indicando cuántas piezas y filas fueron añadidas.</li>
+        </ol>
+    </div>
+
+    <h3>Paso 3: Sentido de Veta y Rotación</h3>
+    <p>En la tabla puedes definir el comportamiento de cada pieza:</p>
+    <ul>
+        <li><span class="tag-pill tag-blue">🔄 Sin Veta</span>: La pieza puede rotar 90° libremente. Úsalo en fondos, estantes interiores o melaminas lisas para maximizar el ahorro de placa.</li>
+        <li><span class="tag-pill tag-amber">↔ Con Veta (Largo)</span>: Obliga a que la textura corra a lo largo de la pieza (frentes, puertas). La pieza <strong>no rotará</strong>.</li>
+        <li><span class="tag-pill tag-green">↕ Con Veta (Ancho)</span>: La veta corre a lo ancho de la pieza.</li>
+    </ul>
+
+    <h3>Paso 4: Optimizar Placas (Guillotina 2D)</h3>
+    <p>Haz clic en el botón grande azul <strong>OPTIMIZAR PLACAS (SELCO GUILLOTINE 2D)</strong>:</p>
+    <ul>
+        <li><strong>KPIs en Pantalla:</strong> Placas necesarias, porcentaje de aprovechamiento global, metros cuadrados útiles, desperdicio y total de cortes de sierra.</li>
+        <li><strong>Lienzo Gráfico 2D:</strong> Representación milimétrica de los cortes. Las líneas amarillas y cian representan las pasadas de la sierra principal.</li>
+        <li><strong>Navegación:</strong> Si el trabajo requiere más de 1 placa, usa las flechas <code>&lt;</code> y <code>&gt;</code> para revisar cada una.</li>
+        <li><strong>Zoom y Paneo:</strong> Usa la rueda del ratón para acercar y arrastra con el ratón para mover el plano.</li>
+    </ul>
+
+    <h3>Paso 5: Exportación a la Seccionadora Selco</h3>
+    <p>En la barra inferior de exportación tienes las opciones para llevar los esquemas al taller:</p>
+    <ul>
+        <li><strong>Descargar Todas las Placas (.ZIP):</strong> Descarga un archivo comprimido con todos los archivos (<code>.001</code>, <code>.002</code>, etc.) listo para pasar a un pendrive USB.</li>
+        <li><strong>Descargar Placa Actual (.00X):</strong> Descarga el archivo de la placa que tienes en pantalla.</li>
+        <li><strong>Guardar en Servidor CNC:</strong> Almacena directamente en la carpeta compartida en red <code>export/</code> accesible desde la máquina.</li>
+        <li><strong>Ver / Copiar Código:</strong> Te muestra el texto numérico Selco para auditar cortes y posiciones.</li>
+    </ul>
+
+    <h2>4. Cómo Transferir a la Máquina en Taller</h2>
+    <div class="card-step">
+        <h4>Vía Pendrive USB:</h4>
+        <ol>
+            <li>Copia los archivos <code>.001</code>, <code>.002</code>, etc. a la memoria USB.</li>
+            <li>Conecta el pendrive en la computadora de la Selco WNT 600.</li>
+            <li>En el software Biesse OSI / Optiplanning de la máquina, pulsa <strong>Cargar Esquema / Importar</strong> y selecciona el archivo.</li>
+            <li>Posiciona la placa en los rodillos empujadores y presiona el ciclo de corte.</li>
+        </ol>
+    </div>
+
+    <h2>5. Preguntas Frecuentes</h2>
+    <p><strong>¿Por qué una pieza no se rota si sobra espacio?</strong><br>
+    Verifica que la pieza no tenga activada la opción <em>Con Veta</em>. Si tiene veta asignada, el sistema respeta la estética del mueble y no la gira.</p>
+
+    <p><strong>¿Por qué el optimizador descuenta 4.4 mm en cada corte?</strong><br>
+    Es el ancho estándar del disco Widia de la Selco WNT 600. Esto garantiza que las piezas cortadas midan exactamente lo especificado en el plano, sin perder milímetros por el aserrín.</p>
+
+</div>
+
+</body>
+</html>

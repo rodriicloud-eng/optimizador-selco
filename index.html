@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizador de Placas de Melamina - Selco WNT 600 (Optiplanning)</title>
+    <link rel="icon" type="image/png" href="assets/icono.png">
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- App CSS -->
+    <link rel="stylesheet" href="css/app.css?v=16">
+</head>
+<body>
+
+    <!-- Main Header -->
+    <header class="app-header">
+        <div class="brand-section">
+            <div class="brand-icon">
+                <img src="assets/icono.png" alt="Optimizador Selco">
+            </div>
+            <div>
+                <h1 class="brand-title">Optimizador Selco WNT 600</h1>
+                <div class="brand-subtitle">
+                    <span>Compatibilidad Optiplanning / OSI Genesis (.001, .002, .003)</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <!-- Reference File Selector -->
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <label for="referenceFileSelect" style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Muestras Fábrica:</label>
+                <select id="referenceFileSelect" class="form-select" style="width: 260px; font-size: 0.8rem; padding: 0.4rem 0.6rem;">
+                    <option value="">Cargando archivos...</option>
+                </select>
+            </div>
+
+            <div class="header-status-badge">
+                <span class="pulse-dot"></span>
+                <span>Seccionadora WNT 600 Conectada</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- App Container -->
+    <main class="app-container">
+
+        <!-- Left Column: Settings & Parts List -->
+        <section class="panel-left">
+
+            <!-- Panel 1: Sheet & Machine Config -->
+            <div class="card">
+                <div class="card-header" style="justify-content: space-between; align-items: center; gap: 0.6rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span class="card-title">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                            Placa y Catálogo de Melaminas
+                        </span>
+                        <span id="badgeMelamineCatalogCount" class="badge-tag-glow" style="font-size: 0.68rem; padding: 0.15rem 0.5rem;">18 melaminas</span>
+                    </div>
+                    <button type="button" id="btnOpenMelamineCatalog" class="btn btn-bulk-primary" style="font-size: 0.75rem !important; padding: 0.36rem 0.75rem !important;" title="Cargar de forma masiva todas las placas de melamina desde Excel, CSV o Catálogo Comercial">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                        <span>📚 Carga Masiva de Melaminas</span>
+                    </button>
+                </div>
+
+                <div class="form-grid">
+                    <!-- Quick Melamine Catalog Selector -->
+                    <div class="form-group full-width" style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(56, 189, 248, 0.28); padding: 0.6rem 0.75rem; border-radius: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; flex-wrap: wrap; gap: 0.35rem;">
+                            <label class="form-label" style="color: #38bdf8; font-weight: 700;">🎨 Seleccionar Melamina / Color Masisa (Auto-Completa Medidas, Color y Código Selco)</label>
+                            <div style="display: flex; gap: 0.35rem; align-items: center;">
+                                <button type="button" id="btnCopyMelamineColor" class="btn btn-secondary" style="font-size: 0.68rem; padding: 0.18rem 0.55rem;" title="Copiar nombre y código de color de la melamina actual">📋 Copiar Color</button>
+                                <button type="button" id="btnSaveCurrentMelamine" class="btn btn-secondary" style="font-size: 0.68rem; padding: 0.18rem 0.55rem;" title="Guardar la melamina actual en el catálogo">+ Guardar en Catálogo</button>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.6rem; align-items: center;">
+                            <div id="activeMelamineSwatch" class="melamine-live-swatch" title="Muestra de color / textura real Masisa" style="width: 40px; height: 38px; border-radius: 6px; border: 2px solid rgba(56, 189, 248, 0.55); background-color: #c89d66; background-size: cover; background-position: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.4);"></div>
+                            <select id="melamineCatalogSelect" class="form-select" style="font-weight: 600; color: #f8fafc; border-color: rgba(56, 189, 248, 0.4); flex: 1;">
+                                <!-- Populated dynamically from Melamine Catalog -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Preajuste de Medida de Placa Comercial</label>
+                        <select id="plateSizePreset" class="form-select">
+                            <option value="2500x1830" selected>1830 x 2500 mm (Masisa / Faplac / Sadepan)</option>
+                            <option value="2750x1830">1830 x 2750 mm (Egger / Kronospan)</option>
+                            <option value="2600x1830">1830 x 2600 mm (Placa intermedia)</option>
+                            <option value="2440x1830">1830 x 2440 mm (Arauco estándar)</option>
+                            <option value="2800x2140">2140 x 2800 mm (Placa Jumbo)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Largo Placa X (mm)</label>
+                        <input type="number" id="sheetLength" class="form-input" value="2500" min="500" max="6000" step="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Ancho Placa Y (mm)</label>
+                        <input type="number" id="sheetWidth" class="form-input" value="1830" min="500" max="4000" step="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Espesor Z (mm)</label>
+                        <select id="sheetThickness" class="form-select">
+                            <option value="18" selected>18 mm (Melamina Estándar)</option>
+                            <option value="15">15 mm</option>
+                            <option value="25">25 mm</option>
+                            <option value="3">3 mm (Fondo / Chapadur)</option>
+                            <option value="5.5">5.5 mm</option>
+                            <option value="9">9 mm</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Espesor Sierra / Kerf (mm)</label>
+                        <input type="number" id="sawKerf" class="form-input" value="4.4" min="1" max="10" step="0.1" title="Ancho de corte del disco principal de la Selco">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Refilo Perimétrico (mm)</label>
+                        <input type="number" id="sheetTrim" class="form-input" value="10" min="0" max="50" step="1" title="Limpieza en los 4 bordes de la placa">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Nº Orden de Trabajo</label>
+                        <input type="text" id="jobCode" class="form-input" value="" maxlength="8" autocomplete="off" placeholder="Nº de la orden" title="Número de la orden de trabajo. La seccionadora acepta hasta 8 caracteres." style="text-transform: uppercase; font-family: 'JetBrains Mono', monospace;">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Nombre del Material (MAT)</label>
+                        <input type="text" id="sheetMaterial" class="form-input" value="ROBLE PROVENZAL 15" maxlength="23" placeholder="Ej: ROBLE PROVENZAL 15">
+                    </div>
+
+                    <div class="form-group full-width" style="margin-top: 0.2rem;">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="chkBatchStrips" checked>
+                            <span>Agrupar tiras idénticas (QTA > 1 en COD="4") para acelerar corte en máquina</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel 2: Parts List (Despiece) -->
+            <div class="card parts-card" style="flex: 1; display: flex; flex-direction: column;">
+                <div class="card-header parts-card-header">
+                    <div class="card-title-wrap">
+                        <div class="card-icon-badge">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        </div>
+                        <div>
+                            <h2 class="card-title-text">Lista de Piezas a Cortar</h2>
+                            <div class="card-title-sub">Despiece paramétrico para seccionadora Selco WNT 600</div>
+                        </div>
+                        <span id="badgeHeaderCount" class="badge-tag-glow">
+                            <span class="pulse-dot-cyan"></span>
+                            <span id="badgeHeaderCountText">0 piezas (0 filas)</span>
+                        </span>
+                    </div>
+
+                    <!-- Unified Modern Action Toolbar -->
+                    <div class="parts-toolbar">
+                        <div class="parts-toolbar-main">
+                            <button type="button" id="btnOpenPasteModal" class="btn btn-bulk-primary" title="Carga masiva: Pegar tabla copiada o subir archivo Excel (.xlsx / .csv)">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                                <span>CARGA MASIVA / EXCEL</span>
+                                <kbd class="kbd-pill">Ctrl+V</kbd>
+                            </button>
+                            <button type="button" id="btnAddRow" class="btn btn-secondary btn-action-tool" title="Agregar una nueva pieza individual">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                <span>+ Agregar Pieza</span>
+                            </button>
+                        </div>
+
+                        <div class="parts-toolbar-aux">
+                            <div class="preset-wrapper">
+                                <select id="presetSelector" class="form-select preset-select" title="Cargar despiece de ejemplo">
+                                    <option value="" selected disabled>📁 Muebles Tipo...</option>
+                                    <option value="cocina_bajo">Bajo Mesada 90cm</option>
+                                    <option value="placard">Placard 2 Puertas</option>
+                                    <option value="obra_multimelamina">✨ Obra Multi-Melamina (3 Placas)</option>
+                                    <option value="muestra_selco_rob">Muestra Fábrica Selco</option>
+                                </select>
+                            </div>
+                            <button type="button" id="btnCopyTable" class="btn btn-secondary btn-action-tool" title="Copiar todas las piezas al portapapeles">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                <span>Copiar</span>
+                            </button>
+                            <button type="button" id="btnClearTable" class="btn btn-danger btn-action-tool" title="Limpiar todas las piezas">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>
+                                <span>Vaciar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Multi-Melamine Bar (Active Melamines in Current Cutlist) -->
+                    <div id="jobMelaminesBar" class="job-melamines-bar" style="display: none;">
+                        <div class="job-melamines-header">
+                            <span class="job-melamines-title">🎨 Melaminas en este Despiece:</span>
+                            <span id="jobMelaminesSummary" class="job-melamines-sub">Se optimizarán todas las melaminas generando sus archivos Selco individuales</span>
+                        </div>
+                        <div id="jobMelaminesPills" class="job-melamines-pills">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Hidden file input for Excel upload triggers -->
+                    <input type="file" id="excelFileInput" accept=".xlsx,.xls,.csv,.tsv,.txt" style="display: none;">
+
+                    <!-- Visual Notification Banner for Bulk Import Success -->
+                    <div id="importedPiecesBanner" class="imported-pieces-banner" style="display: none;">
+                        <div class="imported-banner-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        </div>
+                        <div class="imported-banner-body">
+                            <div class="imported-banner-header">
+                                <strong class="imported-banner-title">¡Piezas Importadas con Éxito!</strong>
+                                <span id="importedBannerTag" class="badge-imported-count">0 piezas</span>
+                                <span id="importedBannerSource" class="badge-source-tag">Excel</span>
+                            </div>
+                            <div id="importedBannerDetails" class="imported-banner-details">
+                                Las piezas se cargaron en la tabla y están listas para optimizar.
+                            </div>
+                        </div>
+                        <div class="imported-banner-actions">
+                            <button type="button" id="btnRunOptimizeNow" class="btn btn-sm btn-accent" title="Optimizar cortes inmediatamente con estas piezas">
+                                ⚡ Optimizar Ahora
+                            </button>
+                            <button type="button" id="btnCloseImportedBanner" class="btn-banner-close" title="Cerrar aviso">✕</button>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="table-container parts-table-wrapper" id="partsTableWrapper">
+                        <table class="parts-table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 7%;">Ítem</th>
+                                    <th style="width: 34%;">Material (Melamina) / Descripción de Pieza</th>
+                                    <th class="text-right" style="width: 11%;">Ancho <span class="th-unit">(mm)</span></th>
+                                    <th class="text-right" style="width: 11%;">Largo <span class="th-unit">(mm)</span></th>
+                                    <th class="text-center" style="width: 19%;">Sentido Veta</th>
+                                    <th class="text-center" style="width: 8%;">Cant.</th>
+                                    <th class="text-center" style="width: 10%;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="partsTableBody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Table Footer Summary Bar -->
+                    <div class="parts-footer-bar">
+                        <div class="parts-footer-stats">
+                            <div class="stat-chip" title="Cantidad total de piezas individuales a cortar">
+                                <span class="stat-chip-icon">📦</span>
+                                <span class="stat-chip-label">Total:</span>
+                                <strong id="badgeTotalParts" class="stat-chip-value">0 piezas</strong>
+                            </div>
+                            <div class="stat-chip" title="Superficie total de piezas">
+                                <span class="stat-chip-icon">📐</span>
+                                <span class="stat-chip-label">Área:</span>
+                                <strong id="badgeTotalArea" class="stat-chip-value">0.00 m²</strong>
+                            </div>
+                        </div>
+                        <div class="parts-footer-quick">
+                            <span style="font-size: 0.72rem; color: var(--text-muted);">Tip: Presiona <kbd class="kbd-pill" style="font-size: 0.65rem;">Ctrl+V</kbd> para pegar desde Excel</span>
+                        </div>
+                    </div>
+
+                    <!-- Big Optimize Button -->
+                    <div class="optimize-action-wrap">
+                        <button type="button" id="btnOptimize" class="btn btn-primary btn-optimize-main">
+                            <div class="btn-optimize-glow"></div>
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            <div class="btn-optimize-text">
+                                <span class="btn-optimize-title">OPTIMIZAR PLACAS (SELCO GUILLOTINE 2D)</span>
+                                <span class="btn-optimize-sub">Algoritmo Guillotina Optiplanning / Biesse WNT 600</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Right Column: Results & Interactive 2D Canvas -->
+        <section class="panel-right">
+
+            <!-- KPI Dashboard -->
+            <div class="kpi-grid">
+                <div class="kpi-card highlight">
+                    <span class="kpi-label">Placas Necesarias</span>
+                    <span id="statTotalSheets" class="kpi-value">-</span>
+                    <span class="kpi-subtext">Optimizado para Selco</span>
+                </div>
+
+                <div class="kpi-card highlight">
+                    <span class="kpi-label">Rendimiento Global</span>
+                    <span id="statGlobalEfficiency" class="kpi-value">-%</span>
+                    <span class="kpi-subtext">Aprovechamiento de placa</span>
+                </div>
+
+                <div class="kpi-card">
+                    <span class="kpi-label">Área Útil</span>
+                    <span id="statUsedArea" class="kpi-value">- m²</span>
+                    <span class="kpi-subtext">Superficie de piezas</span>
+                </div>
+
+                <div class="kpi-card">
+                    <span class="kpi-label">Desperdicio</span>
+                    <span id="statWasteArea" class="kpi-value">- m²</span>
+                    <span class="kpi-subtext">Retazos y sobrantes</span>
+                </div>
+
+                <div class="kpi-card">
+                    <span class="kpi-label">Cortes Totales</span>
+                    <span id="statTotalCuts" class="kpi-value">-</span>
+                    <span class="kpi-subtext">Pasadas de carro sierra</span>
+                </div>
+            </div>
+
+            <!-- Canvas & 3D Studio Card -->
+            <div class="card canvas-card">
+
+                <!-- Canvas Navigation & Toolbar -->
+                <div class="canvas-toolbar">
+                    <!-- View Mode Switcher (2D Esquema vs 3D Despiece) -->
+                    <div class="view-mode-tabs">
+                        <button type="button" id="tabView2D" class="view-tab-btn active" title="Ver Esquema de Corte 2D para Seccionadora Selco WNT 600">
+                            <span>📐</span> Esquema de Corte 2D
+                        </button>
+                        <button type="button" id="tabView3D" class="view-tab-btn" title="Ver Mueble en 3D Interactivo y Vista Explosionada del Despiece">
+                            <span>🧊</span> Mueble 3D y Despiece
+                        </button>
+                        <button type="button" id="btnTopWorkOrder" class="view-tab-btn" style="color: #fbbf24;" title="Generar e Imprimir Orden de Trabajo lista para Producción">
+                            <span>🖨️</span> Orden de Trabajo
+                        </button>
+                    </div>
+
+                    <div id="canvasNavigation" class="canvas-nav" style="display: none;">
+                        <button type="button" id="btnPrevSheet" class="btn-icon" title="Placa anterior">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                        </button>
+
+                        <select id="sheetSelectDropdown" class="form-select" style="width: auto; min-width: 190px; font-weight: 600; font-size: 0.8rem; padding: 0.35rem 0.6rem;">
+                            <!-- Populated after optimization -->
+                        </select>
+
+                        <button type="button" id="btnNextSheet" class="btn-icon" title="Siguiente placa">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+
+                        <span id="currentSheetBadge" class="sheet-badge">Placa 1</span>
+                    </div>
+
+                    <div id="canvasTools2D" class="canvas-tools">
+                        <button type="button" id="btnZoomIn" class="btn-icon" title="Acercar (+)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                        </button>
+                        <button type="button" id="btnZoomOut" class="btn-icon" title="Alejar (-)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                        </button>
+                        <button type="button" id="btnFitScreen" class="btn-icon" title="Ajustar a pantalla">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2D Canvas Viewport -->
+                <div id="viewport2DContainer" class="canvas-wrapper">
+                    <canvas id="cuttingCanvas"></canvas>
+                    <!-- Floating Hover Tooltip -->
+                    <div id="canvasTooltip" class="canvas-tooltip"></div>
+                </div>
+
+                <!-- 3D Furniture & Exploded Cutlist Studio Viewport -->
+                <div id="viewport3DContainer" style="display: none; flex-direction: column; flex: 1;">
+                    <!-- Parametric Furniture Generator Bar -->
+                    <div class="parametric-generator-bar">
+                        <div class="param-field">
+                            <label>Tipo de Mueble 3D</label>
+                            <select id="paramCabinetType">
+                                <option value="bajo_mesada" selected>Bajo Mesada Cocina</option>
+                                <option value="placard">Placard / Ropero</option>
+                                <option value="alacena">Alacena Superior</option>
+                                <option value="biblioteca">Estantería / Biblioteca</option>
+                            </select>
+                        </div>
+                        <div class="param-field">
+                            <label>Ancho Total (mm)</label>
+                            <input type="number" id="paramWidth" value="900" min="300" max="3000" step="10" style="width: 80px;">
+                        </div>
+                        <div class="param-field">
+                            <label>Alto Total (mm)</label>
+                            <input type="number" id="paramHeight" value="720" min="300" max="2600" step="10" style="width: 80px;">
+                        </div>
+                        <div class="param-field">
+                            <label>Profundidad (mm)</label>
+                            <input type="number" id="paramDepth" value="580" min="200" max="1000" step="10" style="width: 80px;">
+                        </div>
+                        <div class="param-field">
+                            <label>Estantes</label>
+                            <input type="number" id="paramShelves" value="1" min="0" max="10" step="1" style="width: 58px;">
+                        </div>
+                        <div class="param-field">
+                            <label>Puertas</label>
+                            <input type="number" id="paramDoors" value="2" min="0" max="4" step="1" style="width: 58px;">
+                        </div>
+                        <div class="param-field">
+                            <label>Cajones</label>
+                            <input type="number" id="paramDrawers" value="0" min="0" max="6" step="1" style="width: 58px;">
+                        </div>
+                        <button type="button" id="btnGenerateParametric3D" class="btn btn-primary btn-sm" title="Calcular despiece del mueble 3D, cargar en la tabla y optimizar placas">
+                            ✨ Generar Despiece 3D + Optimizar
+                        </button>
+                    </div>
+
+                    <!-- 3D Controls & Explosion Slider -->
+                    <div class="studio3d-toolbar">
+                        <div class="explode-slider-group">
+                            <label for="explodeSlider">💥 Vista Explosionada (Despiece 3D):</label>
+                            <input type="range" id="explodeSlider" class="explode-range" min="0" max="100" value="25">
+                            <span id="explodeValueText" style="font-family: monospace; font-size: 0.78rem; color: #f8fafc; min-width: 36px;">25%</span>
+                        </div>
+
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <label style="display: inline-flex; align-items: center; gap: 5px; font-size: 0.76rem; color: #cbd5e1; cursor: pointer;">
+                                <input type="checkbox" id="chkShow3DLabels" checked>
+                                <span>Etiquetas 3D (Ítem y Medida)</span>
+                            </label>
+                            <label style="display: inline-flex; align-items: center; gap: 5px; font-size: 0.76rem; color: #cbd5e1; cursor: pointer;">
+                                <input type="checkbox" id="chkWireframe3D">
+                                <span>Estructura Alambre</span>
+                            </label>
+                            <button type="button" id="btnResetCamera3D" class="btn btn-secondary btn-sm">
+                                🎯 Centrar Cámara 3D
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- WebGL Canvas Mount -->
+                    <div id="threeCanvasMount" class="studio3d-viewport"></div>
+
+                    <!-- Selected Part Inspector Overlay -->
+                    <div id="threeInfoBar" class="studio3d-info-bar">
+                        <div style="font-size:0.78rem; color:#94a3b8;">
+                            💡 <strong>Interactivo:</strong> Arrastra para rotar 360°, usa la rueda para zoom, mueve el deslizador de <strong>Vista Explosionada</strong> o haz clic en cualquier pieza del mueble.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Bar -->
+                <div id="exportBar" class="export-bar" style="display: none;">
+                    <div class="export-group">
+                        <button type="button" id="btnPrintWorkOrder" class="btn" style="background: #f59e0b; color: #0f172a; font-weight: 800;" title="Abrir Orden de Trabajo lista para producción con Esquemas de Corte y Etiquetas">
+                            🖨️ Orden de Trabajo y Esquema (Imprimir / PDF)
+                        </button>
+                        <button type="button" id="btnDownloadZip" class="btn btn-success" title="Descargar paquete completo de archivos para la máquina Selco WNT 600">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Lote Selco WNT600 (.ZIP)
+                        </button>
+                        <button type="button" id="btnDownloadCurrent" class="btn btn-secondary" title="Descargar el archivo nativo .001 / .002 de la placa actual">
+                            💾 Placa (.00X)
+                        </button>
+                        <button type="button" id="btnDownloadOsiXml" class="btn btn-secondary" title="Descargar archivo XML OSI Biesse Selco">
+                            📄 Selco OSI (.XML)
+                        </button>
+                    </div>
+
+                    <div class="export-group">
+                        <button type="button" id="btnCopySelcoCode" class="btn btn-accent" title="Ver y copiar el código de máquina Selco WNT 600">
+                            👁️ Ver Código Selco
+                        </button>
+                        <button type="button" id="btnSaveServer" class="btn btn-primary" title="Guardar directamente en carpeta de exportación CNC">
+                            🖥️ Guardar en CNC
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Modal: View & Copy Selco Code -->
+    <div id="codeModalBackdrop" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span id="modalFileTitle" class="card-title">Código de Corte Selco WNT 600</span>
+                <button type="button" id="modalCloseBtn" class="btn-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <pre id="selcoCodePreview" class="code-view"></pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCopyModalText" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copiar al Portapapeles
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Bulk Paste from Excel / CSV -->
+    <div id="pasteModalBackdrop" class="modal-backdrop">
+        <div class="modal-card" style="max-width: 800px;">
+            <div class="modal-header">
+                <span class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                    Carga Masiva de Piezas (Excel, CSV o Portapapeles)
+                </span>
+                <button type="button" id="pasteModalCloseBtn" class="btn-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Direct Excel / CSV File Drop Zone -->
+                <div class="excel-drop-zone" id="excelDropZone" title="Arrastra tu archivo Excel aquí o haz clic para seleccionarlo">
+                    <div class="excel-drop-content">
+                        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <div>
+                            <strong style="color: #f8fafc; font-size: 0.95rem;">Arrastra y suelta tu archivo Excel (.xlsx / .xls / .csv) aquí</strong>
+                            <div style="color: var(--text-muted); font-size: 0.78rem; margin-top: 3px;">
+                                o haz clic en <span class="drop-browse-link" id="linkBrowseExcel">Seleccionar Archivo</span> desde tu computadora
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm" id="btnModalBrowseExcel" style="font-size: 0.78rem; padding: 0.35rem 0.85rem; font-weight: 600;">
+                            📁 Seleccionar Archivo Excel
+                        </button>
+                        <input type="file" id="modalExcelFileInput" accept=".xlsx,.xls,.csv,.tsv,.txt" style="display: none;">
+                    </div>
+                </div>
+
+                <div class="bulk-divider">
+                    <span>O PEGA TEXTO COPIADO DE EXCEL / WHATSAPP / NOTAS</span>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <div style="font-size: 0.78rem; color: var(--text-secondary);">
+                        Copia las filas en tu planilla y presiona <kbd style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.35rem; border-radius: 3px; font-family: monospace;">Ctrl+V</kbd> en este recuadro:
+                    </div>
+                    <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+                        <button type="button" id="btnPasteFromClipboard" class="btn btn-accent" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" title="Pegar contenido del portapapeles de la computadora">📋 Pegar Portapapeles</button>
+                        <button type="button" id="btnPasteSampleMulti" class="btn btn-bulk-primary" style="font-size: 0.72rem !important; padding: 0.25rem 0.6rem !important;" title="Cargar ejemplo con 3 melaminas distintas (Roble 15, Blanca 15 y Dur 3)">✨ Ejemplo Multi-Melamina (Todas las Melaminas)</button>
+                        <button type="button" id="btnPasteSample1" class="btn btn-secondary" style="font-size: 0.72rem; padding: 0.25rem 0.5rem;">Ejemplo Cocina</button>
+                        <button type="button" id="btnPasteSample2" class="btn btn-secondary" style="font-size: 0.72rem; padding: 0.25rem 0.5rem;">Ejemplo Placard</button>
+                        <button type="button" id="btnPasteClear" class="btn btn-danger" style="font-size: 0.72rem; padding: 0.25rem 0.5rem;">Borrar</button>
+                    </div>
+                </div>
+
+                <div class="paste-options-bar">
+                    <div style="display: flex; align-items: center; gap: 0.4rem; flex: 1; min-width: 250px;">
+                        <label for="pasteColFormat" style="font-size: 0.75rem; color: var(--text-secondary); white-space: nowrap;">Columnas:</label>
+                        <select id="pasteColFormat" class="form-select" style="font-size: 0.75rem; padding: 0.35rem 0.5rem; width: 100%;">
+                            <option value="auto" selected>✨ Orden Estándar (Ítem | Descripción | Ancho | Largo | Veta) + Auto-Detección</option>
+                            <option value="item_desc_w_l_v">Ítem | Descripción | Ancho | Largo | Veta</option>
+                            <option value="name_l_w_q">Descripción | Largo | Ancho | Cantidad</option>
+                            <option value="name_q_l_w">Descripción | Cantidad | Largo | Ancho</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                        <label for="pasteDefaultGrain" style="font-size: 0.75rem; color: var(--text-secondary); white-space: nowrap;">Veta por defecto:</label>
+                        <select id="pasteDefaultGrain" class="form-select" style="font-size: 0.75rem; padding: 0.35rem 0.5rem; width: auto;">
+                            <option value="none" selected>🔄 Sin Veta (Permite Girar)</option>
+                            <option value="longitudinal">↔ Con Veta (Sentido Largo)</option>
+                            <option value="transversal">↕ Con Veta (Sentido Ancho)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <textarea id="pasteArea" class="paste-textarea" placeholder="Pega aquí tus columnas copiadas de Excel (Ctrl+V):&#10;Ítem&#9;Descripción&#9;Ancho&#9;Largo&#9;Veta&#10;1&#9;Lateral Izquierdo&#9;580&#9;720&#9;Largo&#10;2&#9;Lateral Derecho&#9;580&#9;720&#9;Largo&#10;3&#9;Piso Mueble&#9;580&#9;864&#9;Sin&#10;4&#9;Puerta Izquierda&#9;446&#9;716&#9;Largo"></textarea>
+
+                <!-- Smart Column Mapping & Auto-Detection Container -->
+                <div id="colMapperSection" class="col-mapper-section" style="display: none;">
+                    <div class="col-mapper-header">
+                        <div class="col-mapper-title">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            <span>Auto-Detección Inteligente de Campos:</span>
+                        </div>
+                        <span id="colMapperStatusBadge" class="badge-count" style="font-size: 0.68rem; background: rgba(56, 189, 248, 0.2); color: #38bdf8;">Todos los campos auto-detectados</span>
+                    </div>
+                    <div id="colMapperGrid" class="col-mapper-grid">
+                        <!-- Populated dynamically with column selectors -->
+                    </div>
+                </div>
+
+                <!-- Detected Material / Thickness Banner -->
+                <div id="detectedMetaBanner" class="detected-meta-banner" style="display: none;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <div style="flex: 1;" id="detectedMetaText"></div>
+                    <label style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; cursor: pointer; color: #f1f5f9; font-weight: 600;">
+                        <input type="checkbox" id="chkApplyMaterialThickness" checked>
+                        <span>Aplicar a la Placa</span>
+                    </label>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem;">
+                    <span style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);">Piezas a Importar</span>
+                    <span id="pastePreviewBadge" class="badge-count" style="background: rgba(100, 116, 139, 0.2); color: #94a3b8;">0 piezas detectadas</span>
+                </div>
+
+                <div class="paste-preview-container">
+                    <table class="paste-preview-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 9%;">Ítem</th>
+                                <th style="width: 28%;">Descripción</th>
+                                <th style="width: 13%;">Ancho</th>
+                                <th style="width: 13%;">Largo</th>
+                                <th style="width: 13%;">Veta</th>
+                                <th style="width: 7%;">Cant.</th>
+                                <th style="width: 17%;">Melamina / Placa</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pastePreviewBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 1.25rem;">
+                                    Pega datos arriba (Ítem, Descripción, Ancho, Largo, Veta, Melamina) o sube un archivo Excel para ver la vista previa en tiempo real.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 0.75rem; display: flex; gap: 1.5rem; align-items: center; font-size: 0.78rem; color: var(--text-secondary);">
+                    <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                        <input type="radio" name="pasteMode" value="replace" checked>
+                        <span style="color: #f1f5f9; font-weight: 500;">Reemplazar lista actual</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                        <input type="radio" name="pasteMode" value="append">
+                        <span style="color: #f1f5f9; font-weight: 500;">Agregar al final de la lista</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCancelPaste" class="btn btn-secondary">Cancelar</button>
+                <button type="button" id="btnApplyPaste" class="btn btn-primary" style="font-weight: 700; padding: 0.55rem 1.25rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span id="btnApplyCountText">Importar Piezas</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Bulk Melamine Catalog Manager (Carga Masiva de Todas las Melaminas) -->
+    <div id="melamineCatalogModalBackdrop" class="modal-backdrop">
+        <div class="modal-card" style="max-width: 960px;">
+            <div class="modal-header">
+                <span class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    Catálogo y Carga Masiva de Melaminas (Colores, Espesores, Medidas y Códigos Selco)
+                </span>
+                <button type="button" id="melamineCatalogCloseBtn" class="btn-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 78vh; overflow-y: auto;">
+                <!-- Section 1: Bulk Import Melamines from Excel / Paste / Presets -->
+                <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 0.9rem 1rem; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.65rem;">
+                        <div>
+                            <strong style="color: #38bdf8; font-size: 0.9rem;">⚡ 1. Carga Masiva de Melaminas (Excel, CSV o Portapapeles)</strong>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">
+                                Pega tu listado de placas de melamina desde Excel (<kbd class="kbd-inline">Ctrl+V</kbd>), sube un archivo <code>.xlsx / .csv</code> o carga los catálogos industriales completos con 1 clic:
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                            <button type="button" id="btnLoadMasisaOfficialCatalog" class="btn btn-bulk-primary" style="font-size: 0.74rem !important; padding: 0.35rem 0.75rem !important;">
+                                🎨 + Cargar las 53 Melaminas y Colores Masisa (Catálogo Oficial)
+                            </button>
+                            <button type="button" id="btnLoadFullCommercialCatalog" class="btn btn-secondary" style="font-size: 0.74rem !important; padding: 0.35rem 0.75rem !important;">
+                                📚 + Sumar Faplac / Egger / Selco
+                            </button>
+                            <button type="button" id="btnCopyAllCatalogColors" class="btn btn-secondary" style="font-size: 0.74rem; padding: 0.35rem 0.75rem;" title="Copiar listado completo de melaminas y códigos de color al portapapeles">
+                                📋 Copiar Todos los Colores
+                            </button>
+                            <button type="button" id="btnBrowseMelamineExcel" class="btn btn-secondary" style="font-size: 0.74rem; padding: 0.35rem 0.75rem;">
+                                📁 Subir Excel / CSV
+                            </button>
+                            <input type="file" id="melamineExcelFileInput" accept=".xlsx,.xls,.csv,.tsv,.txt" style="display: none;">
+                        </div>
+                    </div>
+
+                    <textarea id="melaminePasteArea" class="paste-textarea" style="min-height: 92px; margin-bottom: 0.6rem;" placeholder="Pega aquí tu planilla de melaminas desde Excel (Ctrl+V). Ejemplo:&#10;Código&#9;Nombre Melamina&#9;Marca&#9;Largo&#9;Ancho&#9;Espesor&#10;002ROB15&#9;ROBLE PROVENZAL 15&#9;Faplac&#9;2500&#9;1830&#9;15&#10;002CAR18&#9;CARVALLO 18&#9;Masisa&#9;2500&#9;1830&#9;18&#10;109BLA15&#9;BLANCA 15&#9;Sadepan&#9;2500&#9;1830&#9;15&#10;001BLA18&#9;BLANCO 18&#9;Faplac&#9;2750&#9;1830&#9;18&#10;002DUR3&#9;DUR BLANCO 3&#9;Faplac&#9;2500&#9;1830&#9;3"></textarea>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                        <div style="display: flex; gap: 0.45rem; align-items: center; flex-wrap: wrap;">
+                            <button type="button" id="btnPasteMelamineSample" class="btn btn-secondary" style="font-size: 0.72rem; padding: 0.28rem 0.6rem;">📋 Ver Ejemplo de Planilla de Melaminas</button>
+                            <span id="melaminePastePreviewInfo" style="font-size: 0.75rem; color: #34d399; font-weight: 600;"></span>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <button type="button" id="btnImportMelaminesReplace" class="btn btn-secondary" style="font-size: 0.74rem; padding: 0.35rem 0.75rem;" title="Reemplazar el catálogo actual por las melaminas pegadas">
+                                Reemplazar Catálogo
+                            </button>
+                            <button type="button" id="btnImportMelaminesAppend" class="btn btn-success" style="font-size: 0.76rem; font-weight: 700; padding: 0.38rem 0.9rem;">
+                                + Importar y Sumar al Catálogo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Active Melamine Catalog Table -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                        <strong style="color: #f8fafc; font-size: 0.9rem;">🗂️ 2. Melaminas y Muestrario de Colores Masisa Disponibles</strong>
+                        <span id="melamineModalCountBadge" class="badge-tag-glow">0 melaminas</span>
+                    </div>
+                    <div style="display: flex; gap: 0.45rem; align-items: center; flex-wrap: wrap;">
+                        <input type="text" id="melamineSearchInput" class="form-input" placeholder="🔍 Buscar color, código, categoría o espesor..." style="width: 240px; padding: 0.32rem 0.6rem; font-size: 0.76rem;">
+                        <button type="button" id="btnAddSingleMelamineRow" class="btn btn-secondary" style="font-size: 0.74rem; padding: 0.34rem 0.7rem;">+ Nueva Melamina</button>
+                        <button type="button" id="btnExportMelamineCatalog" class="btn btn-secondary" style="font-size: 0.74rem; padding: 0.34rem 0.7rem;" title="Descargar catálogo en formato CSV/Excel">💾 Exportar Excel/CSV</button>
+                    </div>
+                </div>
+
+                <div class="table-container parts-table-wrapper" style="max-height: 360px;">
+                    <table class="parts-table">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 10%;">Color</th>
+                                <th style="width: 12%;">Código</th>
+                                <th style="width: 24%;">Nombre / Color Melamina (MAT)</th>
+                                <th style="width: 17%;">Marca / Categoría</th>
+                                <th class="text-center" style="width: 9%;">Largo</th>
+                                <th class="text-center" style="width: 9%;">Ancho</th>
+                                <th class="text-center" style="width: 7%;">Esp.</th>
+                                <th class="text-center" style="width: 12%;">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="melamineCatalogTableBody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: space-between;">
+                <span style="font-size: 0.74rem; color: var(--text-muted);">💡 Todas las melaminas quedan guardadas automáticamente y se usan al optimizar obras de múltiples melaminas.</span>
+                <button type="button" id="btnCloseMelamineCatalogModal" class="btn btn-primary" style="padding: 0.5rem 1.2rem; font-weight: 700;">Listo y Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="appToast" class="app-toast"></div>
+
+    <!-- JavaScript Dependencies -->
+    <script src="js/jszip.min.js?v=2"></script>
+    <script src="js/xlsx.mini.min.js?v=2"></script>
+    <script src="js/three.min.js?v=2"></script>
+    <script src="js/OrbitControls.js?v=2"></script>
+    <script src="js/selco-parser.js?v=2"></script>
+    <script src="js/optimizer.js?v=2"></script>
+    <script src="js/canvas-renderer.js?v=2"></script>
+    <script src="js/masisa-catalog.js?v=7"></script>
+    <script src="js/furniture-3d.js?v=7"></script>
+    <script src="js/work-order.js?v=7"></script>
+    <script src="js/app.js?v=18"></script>
+
+</body>
+</html>

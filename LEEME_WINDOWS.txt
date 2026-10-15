@@ -1,0 +1,49 @@
+=============================================================================
+  GUÍA RÁPIDA: CÓMO USAR EL OPTIMIZADOR SELCO WNT 600 EN WINDOWS
+=============================================================================
+
+¡BUENAS NOTICIAS! 
+👉 NO NECESITAS INSTALAR XAMPP NI NINGÚN PROGRAMA SI NO QUIERES.
+El sistema cuenta con una versión HTML5 autónoma que corre directamente
+en tu navegador web de Windows (Chrome, Edge, Firefox, etc.).
+
+-----------------------------------------------------------------------------
+MÉTODO 1: EL MÁS FÁCIL (CERO INSTALACIÓN)
+-----------------------------------------------------------------------------
+1. Abre esta carpeta en Windows.
+2. Haz doble clic sobre el archivo:
+   👉 "index.html"
+3. Se abrirá inmediatamente en Google Chrome o Microsoft Edge.
+4. Todo funciona al 100%:
+   - Carga masiva de Excel (.xlsx, .csv y Ctrl+V).
+   - Detección inteligente de columnas.
+   - Algoritmo de corte guillotina 2D para Selco WNT 600.
+   - Visualizador de cotas y secuencias de corte.
+   - Descarga directa de archivos (.001, .002, etc.).
+   - Descarga del paquete completo (.ZIP).
+
+
+-----------------------------------------------------------------------------
+MÉTODO 2: CON SERVIDOR LOCAL (DOBLE CLIC EN .BAT)
+-----------------------------------------------------------------------------
+Si tienes PHP instalado o XAMPP en cualquier ruta de tu Windows:
+1. Haz doble clic en:
+   👉 "INICIAR_EN_WINDOWS.bat"
+2. Abrirá el servidor local en: http://localhost:8080/
+
+
+-----------------------------------------------------------------------------
+MÉTODO 3: CON XAMPP (OPCIONAL)
+-----------------------------------------------------------------------------
+Solo si ya tienes XAMPP instalado y prefieres usarlo:
+1. Copia toda esta carpeta en: C:\xampp\htdocs\Optimizador
+2. En XAMPP Control Panel, haz clic en "Start" en Apache.
+3. Entra en tu navegador a: http://localhost/Optimizador/
+
+
+-----------------------------------------------------------------------------
+DOCUMENTACIÓN Y MANUAL DE USUARIO
+-----------------------------------------------------------------------------
+- Para ver el manual completo con imágenes, abre: "MANUAL_DE_USUARIO.html".
+- También puedes leer: "MANUAL_DE_USUARIO.md".
+=============================================================================
